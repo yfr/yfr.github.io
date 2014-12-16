@@ -1,0 +1,103 @@
+- what? (What are webComponents really?)
+  - shadow dom
+    - be batman, hide in the shadow
+      do what you please but don't be a jerk. cause you can't!
+    - encapsulated
+  - custom elements
+    - every dreamed of an element with your name on it?
+    - give it your name!
+    - ressurect blink
+  - html import (distribution, elements repo, bower)
+    - load other html files (async?)
+    - save your awesome component in a repo to use for others
+    - reuse something you made. be DRY!
+  - html template
+    - build templates without learning to much new stuff
+    - build boilerplates with pure html
+    - non devs could use you elements too.
+    - defined and standarized interface. easy to learn. cause HTML is easy to learn
+
+- why? (Why should i use them?)
+  - plugin system for html
+  - reusable elements
+  - simple api for others
+  - browsers doing it all the time, since ever!
+    <video>
+      <source src="trailer.mp4" type="video/mp4">
+      <source src="trailer.webm" type="video/webm">
+      <source src="trailer.ogv" type="video/ogg">
+    </video>
+  - encapsulation
+  - scope
+  - performance
+    - resoucres are not requested until the <template> goes live.
+
+  - Sie sind einheitlich, denn alles ist ein HTML-Element
+  - Sie sind einfach zu benutzten, denn jeder kann schon HTML. Selbst für technisch nicht sonderlich bewanderte CMS-Redakteure sollten Web Components zu meistern sein.
+  - Sie sind kombinierbar, denn sie sind ja nur HTML-Elemente. Eine Konstruktion wie <light-box><google-map></google-map></light-box> funktioniert auch ohne dass die beiden Elemente aufeinander abgestimmt sein müssen, so wie auch <div><p></p></div> einfach funktioniert
+  - Sie kapseln ihren inneren Aufbau (HTML, CSS, JS) und verhindern so Konflikte mit anderen Plugins oder Scripts auf der Webseite.
+
+- how? (How can i use them)
+  - show presentation components
+  - examples
+    - <google-maps>
+    - lunch.wtf
+  - libs
+    - js libs
+    - databinding and stuff
+    - build in events
+    - no need to write your own. there are element repos. like npm for html
+
+- when? (When can i start)
+  - now!
+    - it's all there
+    - no extras included
+  - polyfills
+    - webcomponentsjs
+      Web Components
+        Custom Elements . Define new elements in HTML.
+        HTML Imports. Load element definitions and other resources declaratively.
+        Shadow DOM. Encapsulate DOM subtrees and the associated CSS.
+      DOM
+        WeakMap. Shim for ES6 WeakMap type.
+        Mutation Observers. Efficiently watch for changes in the DOM.
+  - "frameworks"
+    - polymer (two-way binding between elements and models)
+    - x-tags
+
+- where?
+  - webcomponents.org (comunity based site all around WC)
+  - polymer (framework, design/UI lib, elements collection)
+  - x-tags mozilla (framework, elements collection)
+  - brick.mozilla.io (design/UI lib)
+  - customelements.io (elements collection)
+  - component kitchen (elements collection)
+  - bosonic (framework)
+
+
+importNode copy of node into document
+createShadowRoot
+<content>
+ObjectCreate
+
+
+http://css-tricks.com/modular-future-web-components/
+http://www.peterkroener.de/web-components-erklaert-teil-1-was-sind-web-components/
+http://webcomponents.org/presentations/easy-composition-and-reuse-with-web-components-at-chrome-devsummit/
+
+
+beispiele
+<core-ajax
+auto
+url="http://api.openweathermap.org/data/2.5/weather"
+params='{"q":"{{city}}", "mode":"json", "units": "metric", "lang": "de"}'
+handleAs="json"
+response="{{weather}}"></core-ajax>
+
+<x-weather city="HHJS"></x-weather>
+
+<google-map
+latitude="-52.033"
+longitude="8.533"
+zoom="8"
+type="roadmap"></google-map>
