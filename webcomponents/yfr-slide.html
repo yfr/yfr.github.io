@@ -1,0 +1,197 @@
+<template step="0" hide-steps>
+  <header>
+    <h1>
+      <content select="slide-header"></content>
+    </h1>
+  </header>
+
+  <section class="content">
+    <content select="slide-content"></content>
+  </section>
+
+  <style type="text/css">
+
+  /*
+  * the host markup
+  */
+  :host {
+    position: absolute;
+    display: none;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: purple;
+  }
+  /*
+  * the host style depending on a class
+  */
+  :host(.current) {
+    display: block;
+  }
+  /*
+  * Context styles. How cool is that?!
+  */
+  :host-context(.presentation-end) {
+    background: darkcyan;
+  }
+
+  /*
+  * How our templates likes to style. Business as usual
+  */
+  * {
+    font-family: monospace;
+  }
+  h1 {
+    font-size: 100px;
+    text-align: center;
+  }
+  .content {
+    font-size: 1rem;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+    width: 70%;
+  }
+
+
+  /*
+  * The content that we include can also be styled in a nice way
+  */
+  ::content slide-content { /* even made up elements */
+    display: block;
+    margin-bottom: 20px;
+  }
+  ::content .small-size {
+    font-size: .6666em;
+  }
+  ::content .big-size {
+    font-size: 2em;
+  }
+  ::content .center {
+    text-align: center;
+  }
+  ::content pre {
+    font-size: 25px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, .2);
+  }
+  ::content [class*="step-"].hide {
+    display: none;
+  }
+  </style>
+
+</template>
+
+<script>
+  // Grab our template full of presentation slide markup and styles
+  var tmpl = document.currentScript.ownerDocument.querySelector('template'),
+    // Create a prototype for a new element that extends HTMLElement
+    slide = Object.create(HTMLElement.prototype);
+
+  // This is the default callback on element creation in the dom
+  slide.createdCallback = function() {
+    // this == the actual dom node of the custom element
+
+    // Setup shadowroot
+    var root = this.createShadowRoot();
+    // append the template stuff inside
+    root.appendChild(document.importNode(tmpl.content, true));
+
+    this.initObservers();
+    this.getAttributes();
+  };
+
+  // Register our new element
+  var Slide = document.registerElement('yfr-slide', {
+    prototype: slide
+  });
+
+  /**
+   * What should happen when the hide-step model property has changed
+   */
+  Slide.prototype.hidestepschanged = function(newValue, oldValue) {
+    if (newValue) {
+      steps = this.querySelectorAll('[class*="step-"]');
+
+      Array.prototype.forEach.call(steps, function(step) {
+        step.classList.add('hide');
+      })
+    }
+  }
+
+  /**
+   * What should happen when step model property has changed
+   */
+  Slide.prototype.stepchanged = function(newValue, oldValue) {
+    steps = this.querySelectorAll('.step-' + newValue);
+
+    Array.prototype.forEach.call(steps, function(step) {
+      step.classList.remove('hide');
+    })
+  }
+
+  /**
+   * What should happen when step model property has changed
+   */
+  Slide.prototype.backgroundcolorchanged = function(newValue, oldValue) {
+    this.style.backgroundColor = newValue;
+  }
+
+  /**
+   * Get the attributes of the element
+   */
+  Slide.prototype.getAttributes = function() {
+    // First, let's verify that the custom element has some attributes
+    if (this.hasAttributes()) {
+      var attributes = this.attributes;
+      for (var i = attributes.length - 1; i >= 0; i--) {
+        this.model[attributes[i].name] = attributes[i].value || attributes[i].specified;
+      }
+    }
+  }
+
+  /**
+   * Initialize the observers.
+   * One for the model where we store our element data and state
+   * One for the mutations to the elements DOM tree
+   */
+  Slide.prototype.initObservers = function() {
+    // Let's have a model ...
+    this.model = {};
+
+    // and observe changes. Love the ES6 stuff
+    Object.observe(this.model, this.onModelChange.bind(this));
+
+    // create an mutationObserver instance
+    var mutationObserver = new MutationObserver(this.onMutationObserve.bind(this));
+
+    // pass in the target node, as well as the mutationObserver options
+    // mutationObserver can watch for attr, data, appended/removed children, ...
+    mutationObserver.observe(this, {
+      attributes: true
+    });
+  }
+
+  /**
+   * Check what changed on the element model
+   * @param [array] changes The observed object changes
+   */
+  Slide.prototype.onModelChange = function(changes) {
+    changes.forEach(function(change) {
+      this[change.name.replace('-', '') + 'changed'](change.object[change.name], change.value);
+    }.bind(this));
+  }
+
+  /**
+   * Check what changed and do things accordingly
+   * @param [Array] mutations The mutations array
+   */
+  Slide.prototype.onMutationObserve = function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'attributes') {
+        this.getAttributes();
+      }
+    }.bind(this));
+  }
+</script>
